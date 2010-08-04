@@ -30,6 +30,19 @@ namespace gg
 
 	typedef pair<int,int> link;
 
+	struct cdbhasher {
+		size_t operator()(const link &p) const {
+			unsigned char *c = (unsigned char *)&p;
+			size_t h = 5381;
+			for (unsigned int i=0; i<sizeof(link); ++i) {
+				h += (h << 5);
+				h ^= c[i];
+			}
+			return h;
+		}
+	};
+
+
 	struct link_hasher {
 		size_t operator()(const link &p) const {
 			return (p.first<<4)^p.second;
