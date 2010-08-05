@@ -84,7 +84,15 @@ namespace gg
 		}
 	};
 
-
+	class vector_int_push_back {
+	public:
+		vector<int> *v;
+		vector_int_push_back(vector<int> &_v) : v(&_v) {}
+		void operator() (link t) {
+			v->push_back(t.second);
+		}
+	};
+	
 
 	class sgraph {
 	public:
@@ -139,6 +147,10 @@ namespace gg
 			}
 		}
 
+		void get_links_from(int s, vector<int> &v) {
+			get_links_from(s, vector_int_push_back(v));
+		}
+		
 		void remove_links_from(int s);
 
 	};
@@ -164,12 +176,22 @@ namespace gg
 			remove_link(link(s,e));
 		}
 
-		void get_links_from(int s, vector<link> &result) {
-			forward.get_links_from(s, vector_link_push_back(result));
+		template<class callback>
+		void get_links_from(int s, callback cb) {
+			forward.get_links_from(s, cb);
 		}
 
-		void get_links_to(int e, vector<link> &result) {
-			backward.get_links_from(e, vector_link_push_back_reversed(result));
+		void get_links_from(int s, vector<int> &result) {
+			forward.get_links_from(s, result);
+		}
+
+		void get_links_to(int e, vector<int> &result) {
+			backward.get_links_from(e, result);
+		}
+
+		template<class callback>
+		void get_links_to(int e, callback cb) {
+			backward.get_links_from(e, cb);
 		}
 
 		void remove_links(vector<link> &links);

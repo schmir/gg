@@ -89,17 +89,17 @@ graph_get_links_to(PyObject *_self, PyObject *args, PyObject*kwds)
 		return NULL;
 	}
 	
-	vector< pair<int, int> > result;
+	vector<int> result;
 	self->graph->get_links_to(docid, result);
 
 	PyObject *pyresult = PyList_New(result.size());
 	if (pyresult) {
 		int count=0;
-		for (vector< pair<int,int> >::iterator it=result.begin();
+		for (vector<int>::iterator it=result.begin();
 		     it!=result.end();
 		     it++) {
 
-			PyList_SetItem(pyresult, count, PyInt_FromLong(it->first));
+			PyList_SetItem(pyresult, count, PyInt_FromLong(*it));
 			count++;
 			
 		}
@@ -117,19 +117,17 @@ graph_get_links_from(PyObject *_self, PyObject *args, PyObject*kwds)
 		return NULL;
 	}
 	
-	vector< pair<int, int> > result;
+	vector<int> result;
 	self->graph->get_links_from(docid, result);
 
 	PyObject *pyresult = PyList_New(result.size());
 	if (pyresult) {
 		int count=0;
-		for (vector< pair<int,int> >::iterator it=result.begin();
+		for (vector<int>::iterator it=result.begin();
 		     it!=result.end();
-		     it++) {
-
-			PyList_SetItem(pyresult, count, PyInt_FromLong(it->second));
-			count++;
-			
+		     ++it) {
+			PyList_SetItem(pyresult, count, PyInt_FromLong(*it));
+			++count;
 		}
 	}
 
