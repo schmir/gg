@@ -1,13 +1,13 @@
 PYTHON?=python
 PYTHON_INCLUDE=-I$(shell $(PYTHON) -c "from distutils import sysconfig; print sysconfig.get_python_inc()")
-
-CC  = gcc -Wall -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC
-CXX = g++ -Wall -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC
+CCACHE?=
+CC  = $(CCACHE) gcc -Wall -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC
+CXX = $(CCACHE) g++ -Wall -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC
 
 all:: t1 gg.so
 
 clean::
-	rm -f t1 *.o
+	rm -f t1 *.o *.so *.pyc
 
 t1: t1.o gglib.o
 	$(CXX) -o t1 t1.o gglib.o
