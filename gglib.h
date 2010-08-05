@@ -1,13 +1,6 @@
 #ifndef GGLIB_H
 #define GGLIB_H
 
-#include <Python.h>
-
-#ifndef WIN32
-#include <unistd.h>
-#include <sys/mman.h>
-#endif
-
 #include <google/sparsetable>
 #include <google/sparse_hash_map>
 #include <google/sparse_hash_set>
