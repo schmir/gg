@@ -87,26 +87,6 @@ namespace gg
 		partitions[num].max = last+1;
 	}
 
-	void sgraph::get_links_from(int s, vector<link> &result) {
-		interval i = *lower_bound(partitions.begin(), partitions.end(), s, intervallt());
-		link_set::iterator end = i.links->end();
-		for (link_set::iterator it (i.links->begin()); it!=end; ++it) {
-			if (it->first==s) {
-				result.push_back(*it);
-			}
-		}
-	}
-
-	void sgraph::get_links_from_r(int s, vector<link> &result) {
-		interval i = *lower_bound(partitions.begin(), partitions.end(), s, intervallt());
-		link_set::iterator end = i.links->end();
-		for (link_set::iterator it (i.links->begin()); it!=end; ++it) {
-			if (it->first==s) {
-				result.push_back(link(it->second,it->first));
-			}
-		}
-	}
-
 	void sgraph::dump() {
 		for (unsigned int i=0;i<partitions.size();++i) {
 			dump_partition(i);
@@ -129,13 +109,13 @@ namespace gg
 
 	void dgraph::remove_links_from(int s) {
 		vector<link> links;
-		forward.get_links_from(s, links);
+		forward.get_links_from(s, vector_link_push_back(links));
 		remove_links(links);
 	}
 
 	void dgraph::remove_links_to(int s) {
 		vector<link> links;
-		backward.get_links_from_r(s, links);
+		backward.get_links_from(s, vector_link_push_back_reversed(links));
 		remove_links(links);
 	}
 }

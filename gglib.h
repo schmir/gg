@@ -73,6 +73,24 @@ namespace gg
 
 	typedef sparse_hash_set<int> int_set;
 
+	class vector_link_push_back {
+	public:
+		vector<link> *v;
+		vector_link_push_back(vector<link> &_v) : v(&_v) {}
+		void operator() (link t) {
+			v->push_back(t);
+		}
+	};
+
+	class vector_link_push_back_reversed {
+	public:
+		vector<link> *v;
+		vector_link_push_back_reversed(vector<link> &_v) : v(&_v) {}
+		void operator() (link t) {
+			v->push_back(link(t.second, t.first));
+		}
+	};
+
 
 
 	class sgraph {
@@ -117,9 +135,17 @@ namespace gg
 			remove_link(link(s,e));
 		}
 
+		template<class callback>
+		void get_links_from(int s, callback cb) {
+			interval i = *lower_bound(partitions.begin(), partitions.end(), s, intervallt());
+			link_set::iterator end = i.links->end();
+			for (link_set::iterator it (i.links->begin()); it!=end; ++it) {
+				if (it->first==s) {
+					cb(*it);
+				}
+			}
+		}
 
-		void get_links_from(int s, vector<link> &result);
-		void get_links_from_r(int s, vector<link> &result);
 		void remove_links_from(int s);
 
 	};
@@ -146,11 +172,11 @@ namespace gg
 		}
 
 		void get_links_from(int s, vector<link> &result) {
-			forward.get_links_from(s, result);
+			forward.get_links_from(s, vector_link_push_back(result));
 		}
 
 		void get_links_to(int e, vector<link> &result) {
-			backward.get_links_from_r(e, result);
+			backward.get_links_from(e, vector_link_push_back_reversed(result));
 		}
 
 		void remove_links(vector<link> &links);
