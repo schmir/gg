@@ -107,13 +107,13 @@ namespace gg
 		}
 	}
 
-	void dgraph::remove_links_from(int s) {
+	void dgraph::remove_links_from(ggint s) {
 		vector<link> links;
 		forward.get_links_from(s, vector_link_push_back(links));
 		remove_links(links);
 	}
 
-	void dgraph::remove_links_to(int s) {
+	void dgraph::remove_links_to(ggint s) {
 		vector<link> links;
 		backward.get_links_from(s, vector_link_push_back_reversed(links));
 		remove_links(links);

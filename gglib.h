@@ -21,7 +21,9 @@ using namespace __gnu_cxx;
 namespace gg
 {
 
-	typedef pair<int,int> link;
+	typedef int ggint;
+
+	typedef pair<ggint,ggint> link;
 
 	struct cdbhasher {
 		size_t operator()(const link &p) const {
@@ -44,13 +46,13 @@ namespace gg
 
 	class link_set;
 	struct interval {
-		int min;
-		int max;   // max itself is excluded
+		ggint min;
+		ggint max;   // max itself is excluded
 		link_set *links;
 	};
 
 	struct intervallt {
-		bool operator()(const interval &i,int s) {
+		bool operator()(const interval &i,ggint s) {
 			return i.max <= s;
 		}
 	};
@@ -64,7 +66,7 @@ namespace gg
 	};
 
 
-	typedef sparse_hash_set<int> int_set;
+	typedef sparse_hash_set<ggint> int_set;
 
 	class vector_link_push_back {
 	public:
@@ -86,8 +88,8 @@ namespace gg
 
 	class vector_int_push_back {
 	public:
-		vector<int> *v;
-		vector_int_push_back(vector<int> &_v) : v(&_v) {}
+		vector<ggint> *v;
+		vector_int_push_back(vector<ggint> &_v) : v(&_v) {}
 		void operator() (link t) {
 			v->push_back(t.second);
 		}
@@ -128,16 +130,16 @@ namespace gg
 
 		}
 
-		void add_link(int s, int e) {
+		void add_link(ggint s, ggint e) {
 			add_link(link(s,e));
 		}
 
-		void remove_link(int s, int e) {
+		void remove_link(ggint s, ggint e) {
 			remove_link(link(s,e));
 		}
 
 		template<class callback>
-		void get_links_from(int s, callback cb) {
+		void get_links_from(ggint s, callback cb) {
 			interval i = *lower_bound(partitions.begin(), partitions.end(), s, intervallt());
 			link_set::iterator end = i.links->end();
 			for (link_set::iterator it (i.links->begin()); it!=end; ++it) {
@@ -147,11 +149,11 @@ namespace gg
 			}
 		}
 
-		void get_links_from(int s, vector<int> &v) {
+		void get_links_from(ggint s, vector<ggint> &v) {
 			get_links_from(s, vector_int_push_back(v));
 		}
 		
-		void remove_links_from(int s);
+		void remove_links_from(ggint s);
 
 	};
 
@@ -168,35 +170,38 @@ namespace gg
 			backward.remove_link(t.second, t.first);
 		}
 
-		void add_link(int s, int e) {
+		void add_link(ggint s, ggint e) {
 			add_link(link(s,e));
 		}
 
-		void remove_link(int s, int e) {
+		void remove_link(ggint s, ggint e) {
 			remove_link(link(s,e));
 		}
 
 		template<class callback>
-		void get_links_from(int s, callback cb) {
+		void get_links_from(ggint s, callback cb) {
 			forward.get_links_from(s, cb);
 		}
 
-		void get_links_from(int s, vector<int> &result) {
+		void get_links_from(ggint s, vector<ggint> &result) {
 			forward.get_links_from(s, result);
 		}
 
-		void get_links_to(int e, vector<int> &result) {
+		void get_links_to(ggint e, vector<ggint> &result) {
 			backward.get_links_from(e, result);
 		}
 
 		template<class callback>
-		void get_links_to(int e, callback cb) {
+		void get_links_to(ggint e, callback cb) {
 			backward.get_links_from(e, cb);
 		}
 
 		void remove_links(vector<link> &links);
-		void remove_links_to(int s);
-		void remove_links_from(int s);
+		void remove_links_to(ggint s);
+		void remove_links_from(ggint s);
+		void dump() {
+			forward.dump();
+		}
 	};
 }
 #endif

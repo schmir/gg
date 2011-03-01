@@ -89,13 +89,13 @@ graph_get_links_to(PyObject *_self, PyObject *args, PyObject*kwds)
 		return NULL;
 	}
 	
-	vector<int> result;
+	vector<ggint> result;
 	self->graph->get_links_to(docid, result);
 
 	PyObject *pyresult = PyList_New(result.size());
 	if (pyresult) {
 		int count=0;
-		for (vector<int>::iterator it=result.begin();
+		for (vector<ggint>::iterator it=result.begin();
 		     it!=result.end();
 		     it++) {
 
@@ -117,13 +117,13 @@ graph_get_links_from(PyObject *_self, PyObject *args, PyObject*kwds)
 		return NULL;
 	}
 	
-	vector<int> result;
+	vector<ggint> result;
 	self->graph->get_links_from(docid, result);
 
 	PyObject *pyresult = PyList_New(result.size());
 	if (pyresult) {
 		int count=0;
-		for (vector<int>::iterator it=result.begin();
+		for (vector<ggint>::iterator it=result.begin();
 		     it!=result.end();
 		     ++it) {
 			PyList_SetItem(pyresult, count, PyInt_FromLong(*it));
