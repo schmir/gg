@@ -23,3 +23,9 @@ gg.o: gglib.h gg.cc
 
 gg.so: gg.o gglib.o
 	$(CXX) -o gg.so -shared  gg.o gglib.o
+
+_gg.cc: _gg.pyx
+	cython --cplus _gg.pyx -o _gg.cc
+
+_gg.so: _gg.o gglib.o
+	$(CXX) -o _gg.so -shared  _gg.o gglib.o
