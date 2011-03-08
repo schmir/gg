@@ -4,6 +4,7 @@
 *.pyc
 *.pyo
 *~
+_gg.cc
 /ID
 /.ropeproject
 
