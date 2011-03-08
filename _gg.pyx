@@ -34,6 +34,8 @@ cdef class intvector(object):
 
         return dereference(self._ptr)[idx]
 
+    def append(self, int item):
+        self._ptr.push_back(item)
 
 
 cdef class graph(object):
