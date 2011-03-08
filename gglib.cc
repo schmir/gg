@@ -10,7 +10,7 @@ namespace gg
 
 		link_set *ls = i.links;
 		unsigned int total = ls->size();
-		map<int, int> counts;
+		std::map<int, int> counts;
 
 		link_set::iterator end = ls->end();
 		for (link_set::iterator it(ls->begin());it!=end;++it) {
@@ -47,7 +47,7 @@ namespace gg
 			return;
 		}
 
-		for (map<int, int>::iterator mi=counts.begin(); mi!=counts.end(); ++mi) {
+		for (std::map<int, int>::iterator mi=counts.begin(); mi!=counts.end(); ++mi) {
 			if (first_count+mi->second == total) {
 				break;
 			}
@@ -94,12 +94,12 @@ namespace gg
 	}
 	void sgraph::dump_partition(unsigned int num) {
 		interval i = partitions[num];
-		cerr << "Partition #" << num << " size=" << i.links->size() << " min/max " << i.min << " " << i.max << endl;
+		std::cerr << "Partition #" << num << " size=" << i.links->size() << " min/max " << i.min << " " << i.max << std::endl;
 	}
 
-	void dgraph::remove_links(vector<link> &links) {
-		vector<link>::iterator end = links.end();
-		for (vector<link>::iterator it=links.begin();
+	void dgraph::remove_links(std::vector<link> &links) {
+		std::vector<link>::iterator end = links.end();
+		for (std::vector<link>::iterator it=links.begin();
 		     it!=end;
 		     ++it) {
 			forward.remove_link(*it);
@@ -108,13 +108,13 @@ namespace gg
 	}
 
 	void dgraph::remove_links_from(ggint s) {
-		vector<link> links;
+		std::vector<link> links;
 		forward.get_links_from(s, vector_link_push_back(links));
 		remove_links(links);
 	}
 
 	void dgraph::remove_links_to(ggint s) {
-		vector<link> links;
+		std::vector<link> links;
 		backward.get_links_from(s, vector_link_push_back_reversed(links));
 		remove_links(links);
 	}

@@ -12,18 +12,13 @@
 #include <ext/hash_map>
 #include <iostream>
 
-using namespace google;
-using namespace std;
-
-namespace __gnu_cxx{};  // only in gcc 3.x
-using namespace __gnu_cxx;
 
 namespace gg
 {
 
 	typedef int ggint;
 
-	typedef pair<ggint,ggint> link;
+	typedef std::pair<ggint,ggint> link;
 
 	struct cdbhasher {
 		size_t operator()(const link &p) const {
@@ -57,7 +52,7 @@ namespace gg
 		}
 	};
 
-	class link_set: public sparse_hash_set< link, link_hasher>
+	class link_set: public google::sparse_hash_set< link, link_hasher>
 	{
 	public:
 		link_set() {
@@ -66,12 +61,12 @@ namespace gg
 	};
 
 
-	typedef sparse_hash_set<ggint> int_set;
+	typedef google::sparse_hash_set<ggint> int_set;
 
 	class vector_link_push_back {
 	public:
-		vector<link> *v;
-		vector_link_push_back(vector<link> &_v) : v(&_v) {}
+		std::vector<link> *v;
+		vector_link_push_back(std::vector<link> &_v) : v(&_v) {}
 		void operator() (link t) {
 			v->push_back(t);
 		}
@@ -79,8 +74,8 @@ namespace gg
 
 	class vector_link_push_back_reversed {
 	public:
-		vector<link> *v;
-		vector_link_push_back_reversed(vector<link> &_v) : v(&_v) {}
+		std::vector<link> *v;
+		vector_link_push_back_reversed(std::vector<link> &_v) : v(&_v) {}
 		void operator() (link t) {
 			v->push_back(link(t.second, t.first));
 		}
@@ -88,8 +83,8 @@ namespace gg
 
 	class vector_int_push_back {
 	public:
-		vector<ggint> *v;
-		vector_int_push_back(vector<ggint> &_v) : v(&_v) {}
+		std::vector<ggint> *v;
+		vector_int_push_back(std::vector<ggint> &_v) : v(&_v) {}
 		void operator() (link t) {
 			v->push_back(t.second);
 		}
@@ -98,7 +93,7 @@ namespace gg
 
 	class sgraph {
 	public:
-		vector<interval> partitions;
+		std::vector<interval> partitions;
 
 		sgraph() {
 			interval i;
@@ -149,7 +144,7 @@ namespace gg
 			}
 		}
 
-		void get_links_from(ggint s, vector<ggint> &v) {
+		void get_links_from(ggint s, std::vector<ggint> &v) {
 			get_links_from(s, vector_int_push_back(v));
 		}
 		
@@ -183,11 +178,11 @@ namespace gg
 			forward.get_links_from(s, cb);
 		}
 
-		void get_links_from(ggint s, vector<ggint> &result) {
+		void get_links_from(ggint s, std::vector<ggint> &result) {
 			forward.get_links_from(s, result);
 		}
 
-		void get_links_to(ggint e, vector<ggint> &result) {
+		void get_links_to(ggint e, std::vector<ggint> &result) {
 			backward.get_links_from(e, result);
 		}
 
@@ -196,7 +191,7 @@ namespace gg
 			backward.get_links_from(e, cb);
 		}
 
-		void remove_links(vector<link> &links);
+		void remove_links(std::vector<link> &links);
 		void remove_links_to(ggint s);
 		void remove_links_from(ggint s);
 		void dump() {
