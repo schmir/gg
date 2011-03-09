@@ -60,3 +60,13 @@ def test_get_reachable_from():
 
     res = g.get_reachable_from(_gg.intvector([4]))
     assert set(res) == set([4])
+
+
+def test_get_reachable_from_cyclic():
+    g = _gg.graph()
+    g.add_link(1, 2)
+    g.add_link(2, 3)
+    g.add_link(3, 1)
+    res = g.get_reachable_from(_gg.intvector([1]))
+    assert set(res) == set([1, 2, 3])
+

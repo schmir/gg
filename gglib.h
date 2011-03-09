@@ -135,9 +135,15 @@ namespace gg
 		}
 
 		void get_reachable_from(std::vector<ggint> &nodes) {
-			// XXX does not work with cyclic graphs....
-			for (auto it = nodes.begin(); it != nodes.end(); ++it) {
-				get_links_from(*it, nodes);
+			int_set done;
+
+			for (int i=0; i<nodes.size(); ++i) {
+				int n = nodes[i];
+				if (done.find(n) != done.end()) {
+					continue;
+				}
+				done.insert(n);
+				get_links_from(n, nodes);
 			}
 		}
 
