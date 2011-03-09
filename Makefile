@@ -2,7 +2,7 @@ PYTHON?=python
 PYTHON_INCLUDE=-I$(shell $(PYTHON) -c "from distutils import sysconfig; print sysconfig.get_python_inc()")
 CCACHE?=
 CC  = $(CCACHE) gcc -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC
-CXX = $(CCACHE) g++ -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC
+CXX = $(CCACHE) g++ -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC -std=gnu++0x
 
 all:: t1 _gg.so
 
