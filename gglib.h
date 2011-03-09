@@ -136,14 +136,20 @@ namespace gg
 
 		void get_reachable_from(std::vector<ggint> &nodes) {
 			int_set done;
+			for (auto it = nodes.begin(); it!=nodes.end(); ++it) {
+				done.insert(*it);
+			}
 
-			for (int i=0; i<nodes.size(); ++i) {
+			for (unsigned int i=0; i<nodes.size(); ++i) {
 				int n = nodes[i];
-				if (done.find(n) != done.end()) {
-					continue;
+				std::vector<ggint> children;
+				get_links_from(n, children);
+				for (auto c = children.begin(); c != children.end(); ++c) {
+					if (done.find(*c) == done.end()) {
+						nodes.push_back(*c);
+						done.insert(*c);
+					}
 				}
-				done.insert(n);
-				get_links_from(n, nodes);
 			}
 		}
 
