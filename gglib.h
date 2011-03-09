@@ -104,11 +104,11 @@ namespace gg
 			partitions.push_back(i);
 		}
 
-		void dump();
-		void dump_partition(unsigned int num);
+		void dump() const;
+		void dump_partition(unsigned int num) const;
 		void split_partition(unsigned int num);
 
-		int find_partition(int s) {
+		int find_partition(int s) const {
 			return lower_bound(partitions.begin(), partitions.end(), s, intervallt())-partitions.begin();
 		}
 
@@ -134,7 +134,7 @@ namespace gg
 			remove_link(link(s,e));
 		}
 
-		void get_reachable_from(std::vector<ggint> &nodes) {
+		void get_reachable_from(std::vector<ggint> &nodes) const {
 			__gnu_cxx::hash_set<int> done;
 
 			for (auto it = nodes.begin(); it!=nodes.end(); ++it) {
@@ -158,7 +158,7 @@ namespace gg
 		}
 
 		template<class callback>
-		void get_links_from(ggint s, callback cb) {
+		void get_links_from(ggint s, callback cb) const {
 			interval i = *lower_bound(partitions.begin(), partitions.end(), s, intervallt());
 			link_set::iterator end = i.links->end();
 			for (link_set::iterator it (i.links->begin()); it!=end; ++it) {
@@ -168,12 +168,12 @@ namespace gg
 			}
 		}
 
-		void get_links_from(ggint s, std::vector<ggint> &v) {
+		void get_links_from(ggint s, std::vector<ggint> &v) const {
 			get_links_from(s, vector_int_push_back(v));
 		}
 		
 		void remove_links_from(ggint s);
-		unsigned int size();
+		unsigned int size() const;
 	};
 
 
@@ -198,34 +198,34 @@ namespace gg
 		}
 
 		template<class callback>
-		void get_links_from(ggint s, callback cb) {
+		void get_links_from(ggint s, callback cb) const {
 			forward.get_links_from(s, cb);
 		}
 
-		void get_links_from(ggint s, std::vector<ggint> &result) {
+		void get_links_from(ggint s, std::vector<ggint> &result) const {
 			forward.get_links_from(s, result);
 		}
 
-		void get_links_to(ggint e, std::vector<ggint> &result) {
+		void get_links_to(ggint e, std::vector<ggint> &result) const {
 			backward.get_links_from(e, result);
 		}
 
-		void get_reachable_from(std::vector<ggint> &nodes) {
+		void get_reachable_from(std::vector<ggint> &nodes) const {
 			return forward.get_reachable_from(nodes);
 		}
 
 		template<class callback>
-		void get_links_to(ggint e, callback cb) {
+		void get_links_to(ggint e, callback cb) const {
 			backward.get_links_from(e, cb);
 		}
 
 		void remove_links(std::vector<link> &links);
 		void remove_links_to(ggint s);
 		void remove_links_from(ggint s);
-		void dump() {
+		void dump() const {
 			forward.dump();
 		}
-		unsigned int size() {
+		unsigned int size() const {
 			return forward.size();
 		}
 	};
