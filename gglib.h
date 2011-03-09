@@ -10,6 +10,7 @@
 #include <map>
 
 #include <ext/hash_map>
+#include <ext/hash_set>
 #include <iostream>
 
 
@@ -133,6 +134,13 @@ namespace gg
 			remove_link(link(s,e));
 		}
 
+		void get_reachable_from(std::vector<ggint> &nodes) {
+			// XXX does not work with cyclic graphs....
+			for (auto it = nodes.begin(); it != nodes.end(); ++it) {
+				get_links_from(*it, nodes);
+			}
+		}
+
 		template<class callback>
 		void get_links_from(ggint s, callback cb) {
 			interval i = *lower_bound(partitions.begin(), partitions.end(), s, intervallt());
@@ -184,6 +192,10 @@ namespace gg
 
 		void get_links_to(ggint e, std::vector<ggint> &result) {
 			backward.get_links_from(e, result);
+		}
+
+		void get_reachable_from(std::vector<ggint> &nodes) {
+			return forward.get_reachable_from(nodes);
 		}
 
 		template<class callback>
