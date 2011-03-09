@@ -1,4 +1,5 @@
 #! /usr/bin/env py.test
+import py
 
 import _gg
 
@@ -27,3 +28,14 @@ def test_intvector_append():
         g.append(i)
 
     assert list(g) == range(1000)
+
+def test_intvector_empty_init():
+    g = _gg.intvector()
+    assert list(g) == []
+
+def test_intvector_init_from_list():
+    g = _gg.intvector(range(100))
+    assert list(g) == range(100)
+
+def test_intvector_init_from_list_with_float():
+    py.test.raises(TypeError, "_gg.intvector([0, 1.5])")

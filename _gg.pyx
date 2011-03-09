@@ -19,8 +19,13 @@ cdef extern from "gglib.h" namespace "gg":
 cdef class intvector(object):
     cdef vector[int] * _ptr
 
-    def __cinit__(self):
+    def __cinit__(self, lst=None):
         self._ptr = new vector[int]()
+        if lst is not None:
+            for x in lst:
+                if not isinstance(x, (int, long)):
+                    raise TypeError("a list of integers is required")
+                self.append(x)
 
     def __dealloc__(self):
         del self._ptr
