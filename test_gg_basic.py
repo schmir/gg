@@ -22,6 +22,20 @@ def test_get_links_to(gr):
         set(gr.get_links_to(i)) == range(1, 100 - i)
 
 
+def test_graph_len():
+    g = _gg.graph()
+    assert len(g) == 0
+
+    g.add_link(1, 2)
+    assert len(g) == 1
+
+    g.add_link(1, 2)
+    assert len(g) == 1
+
+    g.add_link(2, 1)
+    assert len(g) == 2
+
+
 def test_intvector_append():
     g = _gg.intvector()
     for i in range(1000):

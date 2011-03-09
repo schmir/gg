@@ -17,6 +17,7 @@ cdef extern from "gglib.h" namespace "gg":
         void remove_links_from(int s)
 
         void get_reachable_from(vector[int] &nodes)
+        int size()
 
 cdef class intvector(object):
     cdef vector[int] * _ptr
@@ -82,3 +83,7 @@ cdef class graph(object):
 
     def remove_links_from(self, s):
         self._ptr.remove_links_from(s)
+
+    def __len__(self):
+        return self._ptr.size()
+

@@ -87,6 +87,14 @@ namespace gg
 		partitions[num].max = last+1;
 	}
 
+	unsigned int sgraph::size() {
+		unsigned int res = 0;
+		for (unsigned int i=0;i<partitions.size();++i) {
+			res += partitions[i].links->size();
+		}
+		return res;
+	}
+
 	void sgraph::dump() {
 		for (unsigned int i=0;i<partitions.size();++i) {
 			dump_partition(i);

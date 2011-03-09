@@ -135,21 +135,25 @@ namespace gg
 		}
 
 		void get_reachable_from(std::vector<ggint> &nodes) {
-			int_set done;
+			__gnu_cxx::hash_set<int> done;
+
 			for (auto it = nodes.begin(); it!=nodes.end(); ++it) {
 				done.insert(*it);
 			}
 
+			std::vector<ggint> children;
+
 			for (unsigned int i=0; i<nodes.size(); ++i) {
 				int n = nodes[i];
-				std::vector<ggint> children;
 				get_links_from(n, children);
-				for (auto c = children.begin(); c != children.end(); ++c) {
+				auto end = children.end();
+				for (auto c = children.begin(); c != end; ++c) {
 					if (done.find(*c) == done.end()) {
 						nodes.push_back(*c);
 						done.insert(*c);
 					}
 				}
+				children.clear();
 			}
 		}
 
@@ -169,7 +173,7 @@ namespace gg
 		}
 		
 		void remove_links_from(ggint s);
-
+		unsigned int size();
 	};
 
 
@@ -220,6 +224,9 @@ namespace gg
 		void remove_links_from(ggint s);
 		void dump() {
 			forward.dump();
+		}
+		unsigned int size() {
+			return forward.size();
 		}
 	};
 }
