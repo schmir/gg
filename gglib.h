@@ -83,6 +83,17 @@ namespace gg
 		}
 	};
 
+	class vector_bool_set {
+	public:
+		std::vector<bool> *v;
+		vector_bool_set(std::vector<bool> &_v) : v(&_v) {}
+		void operator() (link t) {
+			if (t.second < v->size()) {
+				(*v)[t.second] = true;
+			}
+		}
+	};
+
 	class vector_int_push_back {
 	public:
 		std::vector<ggint> *v;
@@ -162,6 +173,13 @@ namespace gg
 		}
 
 		template<class callback>
+		void get_links_from(std::vector<ggint> &nodes, callback cb) const {
+			for (auto it=nodes.begin(); it!=nodes.end(); ++it) {
+				get_links_from(*it, cb);
+			}
+		}
+
+		template<class callback>
 		void get_links_from(ggint s, callback cb) const {
 			interval i = *lower_bound(partitions.begin(), partitions.end(), s, intervallt());
 			link_set::iterator end = i.links->end();
@@ -172,10 +190,18 @@ namespace gg
 			}
 		}
 
+		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &v) {
+			get_links_from(nodes, vector_bool_set(v));
+		}
+
 		void get_links_from(ggint s, std::vector<ggint> &v) const {
 			get_links_from(s, vector_int_push_back(v));
 		}
-		
+
+		void get_links_from(std::vector<ggint> &nodes, std::vector<ggint> &v) const {
+			get_links_from(nodes, vector_int_push_back(v));
+		}
+
 		void remove_links_from(ggint s);
 		unsigned int size() const;
 	};

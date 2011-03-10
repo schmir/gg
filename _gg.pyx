@@ -1,5 +1,6 @@
 from libcpp.vector cimport vector
 from cython.operator import dereference
+from libcpp cimport bool
 
 version = "0.1.0"
 version_info = (0, 1, 0)
@@ -21,6 +22,33 @@ cdef extern from "gglib.h" namespace "gg":
         int maxstartnode()
         int maxendnode()
 
+cdef class boolvector(object):
+    cdef vector[bool] * _ptr
+
+    def __cinit__(self):
+        self._ptr = new vector[bool]()
+
+    def __dealloc__(self):
+        del self._ptr
+
+    def __len__(self):
+        return self._ptr.size()
+
+    def __getitem__(self, int idx):
+        if idx<0 or idx>=self._ptr.size():
+            raise IndexError("list index out of range")
+
+        return dereference(self._ptr)[idx]
+
+    def __setitem__(self, int idx, bool val):
+        if idx<0 or idx>=self._ptr.size():
+            raise IndexError("list index out of range")
+
+        dereference(self._ptr)[idx] = val
+
+    def resize(self, int size):
+        self._ptr.resize(size)
+
 cdef class intvector(object):
     cdef vector[int] * _ptr
 
@@ -31,6 +59,9 @@ cdef class intvector(object):
                 if not isinstance(x, (int, long)):
                     raise TypeError("a list of integers is required")
                 self.append(x)
+
+    def bla(self, bool idx):
+        pass
 
     def __dealloc__(self):
         del self._ptr
