@@ -2,6 +2,17 @@
 
 namespace gg
 {
+	ggint link_set::maxstartnode() const {
+		ggint res = 0;
+		for (auto it = begin(); it != end(); ++it) {
+			ggint f = it->first;
+			if (f > res) {
+				res = f;
+			}
+		}
+		return res;
+	}
+
 	void sgraph::split_partition(unsigned int num) {
 		interval i = partitions[num];
 		if (i.max==i.min+1) {
@@ -85,6 +96,19 @@ namespace gg
 		delete ls;
 		partitions[num].links = first;
 		partitions[num].max = last+1;
+	}
+
+	ggint sgraph::maxstartnode() const {
+		for (auto it=partitions.rbegin(); it != partitions.rend(); ++it) {
+			if (it->links->size()==0) {
+				continue;
+			}
+			if (it->max-it->min == 1) {
+				return it->min;
+			}
+			return it->links->maxstartnode();
+		}
+		return 0;
 	}
 
 	unsigned int sgraph::size() const {

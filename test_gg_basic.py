@@ -91,3 +91,11 @@ def test_get_reachable_from_multiple_parents():
     g.add_link(2, 3)
     res = g.get_reachable_from(_gg.intvector([1, 2]))
     assert list(res) == [1, 2, 3]
+
+
+def test_maxstartnode():
+    g = _gg.graph()
+    g.add_link(1, 3)
+
+    assert g.maxstartnode() == 1
+    assert g.maxendnode() == 3

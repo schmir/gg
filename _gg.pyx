@@ -18,6 +18,8 @@ cdef extern from "gglib.h" namespace "gg":
 
         void get_reachable_from(vector[int] &nodes)
         int size()
+        int maxstartnode()
+        int maxendnode()
 
 cdef class intvector(object):
     cdef vector[int] * _ptr
@@ -87,3 +89,8 @@ cdef class graph(object):
     def __len__(self):
         return self._ptr.size()
 
+    def maxstartnode(self):
+        return self._ptr.maxstartnode()
+
+    def maxendnode(self):
+        return self._ptr.maxendnode()

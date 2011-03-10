@@ -59,6 +59,7 @@ namespace gg
 		link_set() {
 			set_deleted_key(link(0x7fffffff,0x7fffffff));
 		}
+		ggint maxstartnode() const;
 	};
 
 
@@ -109,6 +110,7 @@ namespace gg
 		void dump() const;
 		void dump_partition(unsigned int num) const;
 		void split_partition(unsigned int num);
+		ggint maxstartnode() const;
 
 		int find_partition(int s) const {
 			return lower_bound(partitions.begin(), partitions.end(), s, intervallt())-partitions.begin();
@@ -229,6 +231,12 @@ namespace gg
 		}
 		unsigned int size() const {
 			return forward.size();
+		}
+		ggint maxstartnode() const {
+			return forward.maxstartnode();
+		}
+		ggint maxendnode() const {
+			return backward.maxstartnode();
 		}
 	};
 }
