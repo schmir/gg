@@ -95,8 +95,10 @@ namespace gg
 	class sgraph {
 	public:
 		std::vector<interval> partitions;
+		unsigned int maxlinks_per_partition;
 
 		sgraph() {
+			maxlinks_per_partition = 64;
 			interval i;
 			i.min = 0;
 			i.max = 0x7fffffff;
@@ -115,7 +117,7 @@ namespace gg
 		void add_link(link t) {
 			interval &i = *lower_bound(partitions.begin(), partitions.end(), t.first, intervallt());
 			i.links->insert(t);
-			if (i.links->size()>512 && i.max!=i.min+1) {
+			if (i.links->size()>maxlinks_per_partition && i.max!=i.min+1) {
 				split_partition(&i-&*partitions.begin());
 			}
 		}
