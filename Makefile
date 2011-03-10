@@ -18,7 +18,7 @@ t1.o: t1.cc gglib.h
 gglib.o: gglib.cc gglib.h
 	$(CXX) -Wall -o gglib.o -c gglib.cc
 
-_gg.o: _gg.cc
+_gg.o: _gg.cc gglib.h
 	$(CXX) -o _gg.o -c _gg.cc
 
 _gg.cc: _gg.pyx
