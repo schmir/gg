@@ -88,7 +88,7 @@ namespace gg
 		std::vector<bool> *v;
 		vector_bool_set(std::vector<bool> &_v) : v(&_v) {}
 		void operator() (link t) {
-			if (t.second < v->size()) {
+			if (t.second < v->size() && t.second >= 0) {
 				(*v)[t.second] = true;
 			}
 		}
@@ -190,7 +190,7 @@ namespace gg
 			}
 		}
 
-		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &v) {
+		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &v) const {
 			get_links_from(nodes, vector_bool_set(v));
 		}
 
@@ -242,6 +242,14 @@ namespace gg
 
 		void get_reachable_from(std::vector<ggint> &nodes) const {
 			return forward.get_reachable_from(nodes);
+		}
+		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &res) const {
+			ggint m = 1 + maxendnode();
+			if (res.size() < m) {
+				res.resize(m);
+			}
+
+			return forward.get_links_from(nodes, res);
 		}
 
 		template<class callback>

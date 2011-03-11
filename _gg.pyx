@@ -13,12 +13,14 @@ cdef extern from "gglib.h" namespace "gg":
         void remove_link(int s, int e)
         void dump()
         void get_links_to(int s, vector[int] result)
+        void get_links_from(vector[int] nodes, vector[bool] result)
         void get_links_from(int s, vector[int] result)
 
         void remove_links_to(int s)
         void remove_links_from(int s)
 
         void get_reachable_from(vector[int] &nodes)
+
         int size()
         int maxstartnode()
         int maxendnode()
@@ -117,10 +119,25 @@ cdef class graph(object):
         self._ptr.get_links_to(s, dereference(result._ptr))
         return result
 
-    def get_links_from(self, s):
-        cdef intvector result = intvector()
-        self._ptr.get_links_from(s, dereference(result._ptr))
-        return result
+    def get_links_from(self, s, result=None):
+        cdef intvector _result
+
+        if result is None:
+            _result = intvector()
+            self._ptr.get_links_from(<int>s, dereference(_result._ptr))
+            return _result
+
+        cdef boolvector boolv
+        boolv = boolvector()
+
+        cdef vector[int] v
+        if isinstance(s, (int, long)):
+            v.push_back(s)
+            self._ptr.get_links_from(v, dereference(boolv._ptr))
+        else:
+            self._ptr.get_links_from(dereference((<intvector>s)._ptr), dereference(boolv._ptr))
+
+        return boolv
 
     def get_reachable_from(self, intvector nodes):
         self._ptr.get_reachable_from(dereference(nodes._ptr))
