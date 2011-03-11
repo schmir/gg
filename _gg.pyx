@@ -1,6 +1,7 @@
 from libcpp.vector cimport vector
 from cython.operator import dereference
 from libcpp cimport bool
+from cpython cimport bool as pybool, int as pyint
 
 version = "0.1.0"
 version_info = (0, 1, 0)
@@ -25,8 +26,13 @@ cdef extern from "gglib.h" namespace "gg":
 cdef class boolvector(object):
     cdef vector[bool] * _ptr
 
-    def __cinit__(self):
+    def __cinit__(self, lst=None):
         self._ptr = new vector[bool]()
+        if lst is not None:
+            for x in lst:
+                if not isinstance(x, pybool):
+                    raise TypeError("a list of bools is required")
+                self.append(x)
 
     def __dealloc__(self):
         del self._ptr
@@ -34,20 +40,23 @@ cdef class boolvector(object):
     def __len__(self):
         return self._ptr.size()
 
-    def __getitem__(self, int idx):
-        if idx<0 or idx>=self._ptr.size():
+    def __getitem__(self, pyint idx):
+        if idx < 0 or idx >= self._ptr.size():
             raise IndexError("list index out of range")
 
         return dereference(self._ptr)[idx]
 
-    def __setitem__(self, int idx, bool val):
-        if idx<0 or idx>=self._ptr.size():
+    def __setitem__(self, pyint idx, pybool val):
+        if idx < 0 or idx >= self._ptr.size():
             raise IndexError("list index out of range")
 
         dereference(self._ptr)[idx] = val
 
     def resize(self, int size):
         self._ptr.resize(size)
+
+    def append(self, pybool item):
+        self._ptr.push_back(item)
 
 cdef class intvector(object):
     cdef vector[int] * _ptr
@@ -60,22 +69,28 @@ cdef class intvector(object):
                     raise TypeError("a list of integers is required")
                 self.append(x)
 
-    def bla(self, bool idx):
-        pass
-
     def __dealloc__(self):
         del self._ptr
 
     def __len__(self):
         return self._ptr.size()
 
-    def __getitem__(self, int idx):
-        if idx<0 or idx>=self._ptr.size():
+    def __getitem__(self, pyint idx):
+        if idx < 0 or idx >= self._ptr.size():
             raise IndexError("list index out of range")
 
         return dereference(self._ptr)[idx]
 
-    def append(self, int item):
+    def __setitem__(self, pyint idx, pyint val):
+        if idx < 0 or idx >= self._ptr.size():
+            raise IndexError("list index out of range")
+
+        dereference(self._ptr)[idx] = val
+
+    def resize(self, int size):
+        self._ptr.resize(size)
+
+    def append(self, pyint item):
         self._ptr.push_back(item)
 
 
