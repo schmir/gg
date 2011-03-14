@@ -4,7 +4,7 @@ CCACHE?=
 CC  = $(CCACHE) gcc -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC
 CXX = $(CCACHE) g++ -Wno-deprecated -O2 -I. $(PYTHON_INCLUDE) -fPIC -std=gnu++0x
 
-all:: t1 _gg.so
+all:: t1 gg.so
 
 clean::
 	rm -f t1 *.o *.so *.pyc
@@ -18,11 +18,11 @@ t1.o: t1.cc gglib.h
 gglib.o: gglib.cc gglib.h
 	$(CXX) -Wall -o gglib.o -c gglib.cc
 
-_gg.o: _gg.cc gglib.h
-	$(CXX) -o _gg.o -c _gg.cc
+gg.o: gg.cc gglib.h
+	$(CXX) -o gg.o -c gg.cc
 
-_gg.cc: _gg.pyx
-	cython --cplus _gg.pyx -o _gg.cc
+gg.cc: gg.pyx
+	cython --cplus gg.pyx -o gg.cc
 
-_gg.so: _gg.o gglib.o
-	$(CXX) -o _gg.so -shared _gg.o gglib.o
+gg.so: gg.o gglib.o
+	$(CXX) -o gg.so -shared gg.o gglib.o

@@ -1,12 +1,12 @@
 #! /usr/bin/env python
 
 import time
-import _gg
+import gg
 
 
 class build_graph(object):
     def __init__(self):
-        self.g = _gg.graph()
+        self.g = gg.graph()
         self.cid = 0
         self.make_container(self.getcid(), 6)
 
@@ -29,7 +29,7 @@ def perf_reachable():
     print "build graph", time.time() - stime, len(g)
 
     stime = time.time()
-    res = g.get_reachable_from(_gg.intvector([1]))
+    res = g.get_reachable_from(gg.intvector([1]))
     print "get_reachable", time.time() - stime, len(res)
 
 perf_reachable()
