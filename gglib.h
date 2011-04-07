@@ -94,6 +94,20 @@ namespace gg
 		}
 	};
 
+	class allowed_vector_bool_set {
+	public:
+		std::vector<bool> *v;
+		std::vector<bool> *allowed;
+		allowed_vector_bool_set(std::vector<bool> &_v, std::vector<bool> &_allowed) : v(&_v), allowed(&_allowed) {}
+		void operator() (link t) {
+			auto idx = t.second;
+			if (idx >= 0 && idx<allowed->size() && idx<v->size() && (*allowed)[idx]) {
+				(*v)[t.second] = true;
+			}
+		}
+	};
+
+
 	class vector_int_push_back {
 	public:
 		std::vector<ggint> *v;
@@ -116,6 +130,67 @@ namespace gg
 			i.max = 0x7fffffff;
 			i.links = new link_set();
 			partitions.push_back(i);
+		}
+
+		class siterator {
+		public:
+			siterator(std::vector<interval>::iterator begin,
+				  std::vector<interval>::iterator end) {
+				partitions_it = begin;
+				partitions_end = end;
+				_find_next();
+			}
+
+			siterator & operator++() {
+				assert (partitions_it != partitions_end);
+				assert (linkset_it != linkset_end);
+
+				++linkset_it;
+				if (linkset_it == linkset_end) {
+					++partitions_it;
+					_find_next();
+				}
+			}
+
+			bool operator==(const siterator &other) const {
+				return other.partitions_it == partitions_it;
+			}
+
+			bool operator!=(const siterator &other) const {
+				return other.partitions_it != partitions_it;
+			}
+
+			link operator*() const {
+				assert (partitions_it != partitions_end);
+				assert (linkset_it != linkset_end);
+				return *linkset_it;
+			}
+
+		protected:
+
+			void _find_next() {
+				while (partitions_it != partitions_end) {
+					linkset_it = partitions_it->links->begin();
+					linkset_end = partitions_it->links->end();
+					if (linkset_it != linkset_end) {
+						break;
+					}
+					++partitions_it;
+				}
+			}
+
+			std::vector<interval>::iterator partitions_it, partitions_end;
+			link_set::iterator linkset_it, linkset_end;
+		};
+
+		typedef siterator iterator;
+
+		siterator begin() {
+			return siterator(partitions.begin(), partitions.end());
+		}
+
+		siterator end() {
+			return siterator(partitions.end(), partitions.end());
 		}
 
 		void dump() const;
@@ -190,6 +265,11 @@ namespace gg
 			}
 		}
 
+
+		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &v, std::vector<bool> &allowed) const {
+			get_links_from(nodes, allowed_vector_bool_set(v, allowed));
+		}
+
 		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &v) const {
 			get_links_from(nodes, vector_bool_set(v));
 		}
@@ -209,6 +289,15 @@ namespace gg
 
 	class dgraph {
 	public:
+		typedef sgraph::iterator iterator;
+		iterator begin() {
+			return forward.begin();
+		}
+
+		iterator end() {
+			return forward.end();
+		}
+
 		sgraph forward, backward;
 		void add_link(link t) {
 			forward.add_link(t);
@@ -243,6 +332,7 @@ namespace gg
 		void get_reachable_from(std::vector<ggint> &nodes) const {
 			return forward.get_reachable_from(nodes);
 		}
+
 		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &res) const {
 			ggint m = 1 + maxendnode();
 			if (res.size() < m) {
@@ -250,6 +340,15 @@ namespace gg
 			}
 
 			return forward.get_links_from(nodes, res);
+		}
+
+		void get_links_from(std::vector<ggint> &nodes, std::vector<bool> &res, std::vector<bool> &allowed) const {
+			ggint m = 1 + maxendnode();
+			if (res.size() < m) {
+				res.resize(m);
+			}
+
+			return forward.get_links_from(nodes, res, allowed);
 		}
 
 		template<class callback>
@@ -273,5 +372,6 @@ namespace gg
 			return backward.maxstartnode();
 		}
 	};
+	typedef dgraph::iterator dgraph_iterator;
 }
 #endif

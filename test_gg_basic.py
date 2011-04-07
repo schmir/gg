@@ -1,6 +1,6 @@
 #! /usr/bin/env py.test
-import py
 
+import py
 import gg
 
 
@@ -10,6 +10,48 @@ def pytest_funcarg__gr(request):
         for j in range(i):
             gr.add_link(i, j)
     return gr
+
+
+small_links = set([(1, 2), (3, 4), (5, 1), (5, 4)])
+
+
+def pytest_funcarg__small(request):
+    small = gg.graph()
+    for x in small_links:
+        small.add_link(*x)
+    return small
+
+# -- tests
+
+
+def test_iter(small):
+    assert set(small) == small_links
+
+
+def test_iter_gr(gr):
+    expected = set()
+    for i in range(100):
+        for j in range(i):
+            expected.add((i, j))
+
+    assert set(gr) == expected
+
+
+def test_iter_empty():
+    assert list(gg.graph()) == []
+
+
+def test_iter_restart(small):
+    try:
+        for i, x in enumerate(small):
+            print "iterate, link:", x
+            if i == 1:
+                raise RuntimeError()
+    except RuntimeError:
+        pass
+
+    links = set(small)
+    assert links == small_links
 
 
 def test_get_links_from(gr):
@@ -99,3 +141,57 @@ def test_maxstartnode():
 
     assert g.maxstartnode() == 1
     assert g.maxendnode() == 3
+
+
+def test_get_links_from_boolvector_return(gr):
+    allowed = gg.boolvector()
+    cids = gg.intvector()
+    cids.append(1)
+    res = gr.get_links_from(cids, allowed)
+    assert res is allowed
+
+
+def test_get_links_from_boolvector_empty(small):
+    cids = gg.intvector()
+    allowed = gg.boolvector()
+    small.get_links_from(cids, allowed)
+    assert list(allowed) == [False] * 5
+
+    allowed[1] = True
+    small.get_links_from(cids, allowed)
+    assert list(allowed) == [False, True, False, False, False]
+
+
+def test_get_links_from_boolvector(small):
+    cids = gg.intvector([3, 5])
+    allowed = gg.boolvector()
+    small.get_links_from(cids, allowed)
+    assert list(allowed) == [False, True, False, False, True]
+    assert list(cids) == [3, 5]
+
+    allowed = gg.boolvector()
+    cids.append(1)
+    small.get_links_from(cids, allowed)
+
+    assert list(allowed) == [False, True, True, False, True]
+
+
+def test_get_links_from_allowed(small):
+    cids = gg.intvector([3, 5])
+    result = gg.boolvector()
+    allowed = gg.boolvector()
+    small.get_links_from(cids, result, allowed)
+    assert list(result) == [False, False, False, False, False]
+
+    allowed.resize(10)
+    small.get_links_from(cids, result, allowed)
+    assert list(result) == [False, False, False, False, False]
+
+    allowed[1] = True
+    small.get_links_from(cids, result, allowed)
+    assert list(result) == [False, True, False, False, False]
+
+    for i in range(10):
+        allowed[i] = True
+    small.get_links_from(cids, result, allowed)
+    assert list(result) == [False, True, False, False, True]
